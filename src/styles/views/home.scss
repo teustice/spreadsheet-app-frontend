@@ -1,0 +1,45 @@
+.home-page {
+  .row div {
+    height: 50px;
+    margin-bottom: 30px;
+    p {
+      background-color: red;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding-right: 5%;
+    position: relative;
+    .h4 {
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: $grey;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .h3 {
+      font-weight: bold;
+    }
+    p {
+      color: $grey;
+    }
+    span {
+      margin-top: 50px;
+    }
+  }
+}
+
+
+.home-footer {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  @media(max-width: 800px) {
+    margin-top: 100px;
+    position: static;
+  }
+}
