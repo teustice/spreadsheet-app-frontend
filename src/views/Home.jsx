@@ -6,7 +6,7 @@ class Home extends Component {
   render() {
     return(
       <div className="container">
-        <h1>Home Page</h1>
+        <h1>React Prototyping Area</h1>
       </div>
     )
   }
