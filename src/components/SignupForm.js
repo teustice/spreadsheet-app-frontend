@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+
+import { setCurrentUser } from '../actions/setCurrentUser'
 
 class SignupForm extends Component {
     constructor(props) {
@@ -56,7 +59,6 @@ class SignupForm extends Component {
 
 
     render() {
-        console.log(this.state)
         let errors = [];
         if(this.state.errors) {
             for(var error in this.state.errors){
@@ -66,21 +68,34 @@ class SignupForm extends Component {
             }
         }
         return (
-            <div className={"login-form-wrapper"} style={{marginBottom: 50}}>
-                <h3>Sign Up</h3>
-                {!this.props.currentUser &&
-                    <form onSubmit={this.login.bind(this)} >
-                        <label>Email</label>
-                        <input name="email" type='text' onKeyUp={this.updateEmail.bind(this)} />
-                        <label>Password</label>
-                        <input name="password" type='password' onKeyUp={this.updatePassword.bind(this)} />
-                        <button type='submit'>Sign Up</button>
-                        <div>{errors}</div>
-                    </form>
-                }
-            </div>
+          <React.Fragment>
+            {!this.props.currentUser &&
+              <div className={"login-form-wrapper"} style={{marginBottom: 50}}>
+                  <h3>Sign Up</h3>
+
+                  <form onSubmit={this.login.bind(this)} >
+                      <label>Email</label>
+                      <input name="email" type='text' onKeyUp={this.updateEmail.bind(this)} />
+                      <label>Password</label>
+                      <input name="password" type='password' onKeyUp={this.updatePassword.bind(this)} />
+                      <button type='submit'>Sign Up</button>
+                      <div>{errors}</div>
+                  </form>
+
+              </div>
+            }
+          </React.Fragment>
         );
     }
 }
 
-export default SignupForm;
+const mapStateToProps = state => ({
+ ...state
+})
+
+const mapDispatchToProps = dispatch => ({
+ setCurrentUser: (val) => dispatch(setCurrentUser(val)),
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignupForm);

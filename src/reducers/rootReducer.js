@@ -1,11 +1,15 @@
 import { combineReducers } from 'redux';
 
-import simpleReducer from './simpleReducer';
-import updateTextReducer from './updateTextReducer';
-import fetchReducer from './fetchReducer';
+import currentUser from './currentUser';
+import {
+  todos,
+  deleteTodo,
+  createTodo
+} from './todos';
 
 export default combineReducers({
-  simpleReducer,
-  updateTextReducer,
-  fetchReducer
+  currentUser,
+  todos,
+  deleteTodo,
+  createTodo
 })

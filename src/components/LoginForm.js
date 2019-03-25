@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+
+import { setCurrentUser } from '../actions/setCurrentUser'
 
 class LoginForm extends Component {
     constructor(props) {
@@ -9,6 +12,13 @@ class LoginForm extends Component {
             password: '',
             errors: undefined,
         }
+    }
+
+    componentDidMount() {
+      if(localStorage.getItem('currentUser')) {
+        let user = JSON.parse(localStorage.getItem('currentUser'));
+        this.props.setCurrentUser(user)
+      }
     }
 
     updateEmail(e) {
@@ -41,9 +51,7 @@ class LoginForm extends Component {
                 return res.json()
             })
             .then(function(json){
-                console.log(json)
                 if(json && json.user) {
-                    console.log(json)
                     that.props.setCurrentUser(json.user)
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
                     that.setState({errors: ''})
@@ -54,9 +62,13 @@ class LoginForm extends Component {
             .catch(error => console.error('Error:', error));
     }
 
+    resetCurrentUser() {
+      localStorage.removeItem('currentUser')
+      this.props.setCurrentUser(null);
+    }
+
 
     render() {
-        console.log(this.state)
         let errors = [];
         if(this.state.errors) {
             for(var error in this.state.errors){
@@ -80,11 +92,20 @@ class LoginForm extends Component {
                     </form>
                 }
                 {this.props.currentUser &&
-                    <button onClick={this.props.resetCurrentUser}>Log Out</button>
+                    <button onClick={this.resetCurrentUser.bind(this)}>Log Out</button>
                 }
             </div>
         );
     }
 }
 
-export default LoginForm;
+
+const mapStateToProps = state => ({
+ ...state
+})
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: (val) => dispatch(setCurrentUser(val)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

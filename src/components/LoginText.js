@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 
 class LoginText extends Component {
     render() {
@@ -12,4 +13,11 @@ class LoginText extends Component {
     }
 }
 
-export default LoginText;
+const mapStateToProps = state => ({
+ ...state
+})
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginText);
