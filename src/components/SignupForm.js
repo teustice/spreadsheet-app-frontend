@@ -33,7 +33,7 @@ class SignupForm extends Component {
             }
         }
 
-        fetch(`${apiUrl}/api/users`, {
+        fetch(`${apiUrl}/users`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
