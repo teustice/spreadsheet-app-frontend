@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import { setCurrentUser } from '../actions/setCurrentUser'
+import apiUrl from '../lib/apiUrl';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class LoginForm extends Component {
             }
         }
 
-        fetch('http://localhost:8080/api/users/login', {
+        fetch(`${apiUrl}/users/login`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import { setCurrentUser } from '../actions/setCurrentUser'
+import apiUrl from '../lib/apiUrl';
 
 class SignupForm extends Component {
     constructor(props) {
@@ -32,7 +33,7 @@ class SignupForm extends Component {
             }
         }
 
-        fetch('http://localhost:8080/api/users', {
+        fetch(`${apiUrl}/api/users`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -44,9 +45,7 @@ class SignupForm extends Component {
                 return res.json()
             })
             .then(function(json){
-                console.log(json)
                 if(json && json.user) {
-                    console.log(json)
                     that.props.setCurrentUser(json.user)
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
                     that.setState({errors: ''})
