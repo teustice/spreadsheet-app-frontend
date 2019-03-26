@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import { Switch, Route } from 'react-router-dom'
 
-import Home from '../views/Home';
-import PageNotFound from '../views/PageNotFound';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import requireAuth from '../components/requiresAuth';
+
+import Home from '../views/Home';
+import Signin from '../views/Signin'
+import PageNotFound from '../views/PageNotFound';
 
 // import GridLines from '../components/GridLines';
 
@@ -25,9 +28,10 @@ class Routes extends Component {
   renderGroup(){
       return (
         <TransitionGroup>
-          <CSSTransition key={this.props.location.key} classNames="fade" timeout={1000}>
+          <CSSTransition key={this.props.location.key} classNames="fade" timeout={1}>
             <Switch location={this.props.location}>
-              <Route exact path='/' component={Home}/>
+              <Route exact path='/' component={requireAuth(Home)}/>
+              <Route exact path='/signin' component={Signin}/>
               <Route component={PageNotFound} />
             </Switch>
           </CSSTransition>

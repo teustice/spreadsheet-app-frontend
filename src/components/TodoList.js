@@ -18,7 +18,7 @@ class TodoList extends Component {
             return (
                 <div key={index} className='todo'>
                     <h3>
-                      {todo.user._id === that.props.currentUser._id &&
+                      {(todo.user._id === that.props.currentUser._id) &&
                         <span style={{color: 'crimson'}} onClick={() => that.props.deleteTodo(todo._id)}>X</span>
                       }
                       {todo.title}

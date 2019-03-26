@@ -15,13 +15,6 @@ class LoginForm extends Component {
         }
     }
 
-    componentDidMount() {
-      if(localStorage.getItem('currentUser')) {
-        let user = JSON.parse(localStorage.getItem('currentUser'));
-        this.props.setCurrentUser(user)
-      }
-    }
-
     updateEmail(e) {
         this.setState({email: e.target.value})
     }
@@ -56,6 +49,8 @@ class LoginForm extends Component {
                     that.props.setCurrentUser(json.user)
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
                     that.setState({errors: ''})
+
+                    that.props.history.push('/')
                 } else if(json.errors) {
                     that.setState({errors: json.errors})
                 }
@@ -64,8 +59,10 @@ class LoginForm extends Component {
     }
 
     resetCurrentUser() {
+      console.log(this.props);
       localStorage.removeItem('currentUser')
       this.props.setCurrentUser(null);
+      this.props.history.push('/signin')
     }
 
 

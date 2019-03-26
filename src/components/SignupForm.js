@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { setCurrentUser } from '../actions/setCurrentUser'
 import apiUrl from '../lib/apiUrl';
+import roles from '../lib/roles';
 
 class SignupForm extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class SignupForm extends Component {
         this.state = {
             email: '',
             password: '',
+            roles: roles,
             errors: undefined
         }
     }
@@ -23,13 +25,22 @@ class SignupForm extends Component {
         this.setState({password: e.target.value})
     }
 
-    login(e) {
+    updateRoles(e) {
+      let role = e.target.value;
+
+      let newRoles = this.state.roles;
+      newRoles[role] = !newRoles[role];
+      this.setState({roles: newRoles})
+    }
+
+    signUp(e) {
         e.preventDefault();
         let that = this;
         let user = {
             user: {
                 email: that.state.email,
-                password: that.state.password
+                password: that.state.password,
+                roles: this.state.roles
             }
         }
 
@@ -45,10 +56,12 @@ class SignupForm extends Component {
                 return res.json()
             })
             .then(function(json){
+              console.log(json);
                 if(json && json.user) {
                     that.props.setCurrentUser(json.user)
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
                     that.setState({errors: ''})
+                    that.props.history.push('/')
                 } else if(json.errors) {
                     that.setState({errors: json.errors})
                 }
@@ -58,33 +71,47 @@ class SignupForm extends Component {
 
 
     render() {
-        let errors = [];
-        if(this.state.errors) {
-            for(var error in this.state.errors){
-                errors.push(
-                    <p key={error}>{error} {this.state.errors[error]}</p>
-                )
-            }
-        }
-        return (
-          <React.Fragment>
-            {!this.props.currentUser &&
-              <div className={"login-form-wrapper"} style={{marginBottom: 50}}>
-                  <h3>Sign Up</h3>
+      let that = this;
+      let errors = [];
+      if(this.state.errors) {
+          for(var error in this.state.errors){
+              errors.push(
+                  <p key={error}>{error} {this.state.errors[error]}</p>
+              )
+          }
+      }
+      let rolesCheckboxes = Object.keys(this.state.roles).map(function(role, index) {
+          return (
+            <div key={index}>
+              <label>{role}</label>
+              <input type="checkbox" value={role} checked={that.state.roles[index]} onChange={that.updateRoles.bind(that)} />
+            </div>
+          );
+      });
 
-                  <form onSubmit={this.login.bind(this)} >
-                      <label>Email</label>
-                      <input name="email" type='text' onKeyUp={this.updateEmail.bind(this)} />
-                      <label>Password</label>
-                      <input name="password" type='password' onKeyUp={this.updatePassword.bind(this)} />
-                      <button type='submit'>Sign Up</button>
-                      <div>{errors}</div>
-                  </form>
+      return (
+        <React.Fragment>
+          {!this.props.currentUser &&
+            <div className={"login-form-wrapper"} style={{marginBottom: 50}}>
+                <h3>Sign Up</h3>
 
-              </div>
-            }
-          </React.Fragment>
-        );
+                <form onSubmit={this.signUp.bind(this)} >
+                    <label>Email</label>
+                    <input name="email" type='text' onKeyUp={this.updateEmail.bind(this)} />
+                    <label>Password</label>
+                    <input name="password" type='password' onKeyUp={this.updatePassword.bind(this)} />
+                    <div className="form-group">
+                      <label>Roles</label>
+                      {rolesCheckboxes}
+                    </div>
+                    <button type='submit'>Sign Up</button>
+                    <div>{errors}</div>
+                </form>
+
+            </div>
+          }
+        </React.Fragment>
+      );
     }
 }
 
