@@ -18,12 +18,13 @@
   }
 
   a {
-    text-decoration: none;
+    text-decoration: underline;
   }
 
   a.active {
     color: $black;
-    text-decoration: underline !important;
+    font-weight: bold;
+    text-decoration: none;
   }
 
   .account-nav {

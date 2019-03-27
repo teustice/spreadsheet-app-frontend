@@ -5,6 +5,7 @@ import ReactDataGrid from 'react-data-grid';
 import {
   getUsers
 } from '../../actions/userActions'
+import UserUpdateForm from './UserUpdateForm'
 import SimpleModal from '../SimpleModal'
 
 
@@ -38,15 +39,9 @@ class UserList extends Component {
     return sortDirection === "NONE" ? initialRows : [...rows].sort(comparer);
   };
 
-  editTodo(todo) {
-    this.setState({selectedTodo: todo});
+  editUser(user) {
+    this.setState({selectedUser: user});
     this.modal.current.openModal()
-  }
-
-  deleteTodo(todo) {
-    if (window.confirm(`Are you sure you want to delete todo: ${todo.title}`)) {
-      this.props.deleteTodo(todo._id)
-    }
   }
 
   closeModal() {
@@ -66,8 +61,7 @@ class UserList extends Component {
       if(that.props.currentUser.roles.admin) {
         modifyButtons = (
           <div>
-            <span style={{color: 'crimson'}} onClick={() => that.deleteTodo(user)}>X</span>
-            <span style={{color: 'green'}} onClick={() => that.editTodo(user)}> Edit</span>
+            <span style={{color: 'green'}} onClick={() => that.editUser(user)}> Edit</span>
           </div>
         );
       } else {
@@ -76,8 +70,10 @@ class UserList extends Component {
       return {
         modify: modifyButtons,
         email: user.email,
-        roles: Object.keys(user.roles).map(function(role){
-          return ' ' + role + ' ';
+        roles: Object.keys(user.roles).map(function(role, index){
+          if(user.roles.hasOwnProperty(role) && user.roles[role]) {
+            return ' ' + role + ' ';
+          }
         }),
         id: user._id}
       }) : '';
@@ -97,6 +93,9 @@ class UserList extends Component {
                 />
             }
           </div>
+          <SimpleModal ref={this.modal} isOpen={false}>
+            <UserUpdateForm user={this.state.selectedUser} submitCallback={this.closeModal.bind(this)}/>
+          </SimpleModal>
         </React.Fragment>
       );
   }

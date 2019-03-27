@@ -9,22 +9,29 @@ class Header extends React.Component {
   render () {
     return (
       <div className="container header-wrapper">
-        <ul>
-          <li>
-            <NavLink exact activeClassName="active" to="/">Home</NavLink>
-          </li>
-          {this.props.currentUser && this.props.currentUser.roles.admin &&
-            <li>
-              <NavLink exact activeClassName="active" to="/admin">Admin Dashboard</NavLink>
-            </li>
-          }
-        </ul>
+        {this.props.currentUser &&
+          <React.Fragment>
+            <ul>
+              <li>
+                <NavLink exact activeClassName="active" to="/">Home</NavLink>
+              </li>
+              <li>
+                <NavLink exact activeClassName="active" to="/profile">Profile</NavLink>
+              </li>
+              {this.props.currentUser && this.props.currentUser.roles.admin &&
+                <li>
+                  <NavLink exact activeClassName="active" to="/admin">Admin Dashboard</NavLink>
+                </li>
+              }
+            </ul>
 
-        <div className="account-nav">
-          <LoginText />
-          <LogoutButton history={this.props.history}/>
+            <div className="account-nav">
+              <LoginText />
+              <LogoutButton history={this.props.history}/>
 
-        </div>
+            </div>
+          </React.Fragment>
+        }
 
 
       </div>

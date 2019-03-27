@@ -56,7 +56,6 @@ class SignupForm extends Component {
                 return res.json()
             })
             .then(function(json){
-              console.log(json);
                 if(json && json.user) {
                     that.props.setCurrentUser(json.user)
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
@@ -92,7 +91,7 @@ class SignupForm extends Component {
       return (
         <React.Fragment>
           {!this.props.currentUser &&
-            <div className={"login-form-wrapper"} style={{marginBottom: 50}}>
+            <div className={"login-form-wrapper"} >
                 <h3>Sign Up</h3>
 
                 <form onSubmit={this.signUp.bind(this)} >

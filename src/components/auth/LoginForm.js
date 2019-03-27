@@ -76,7 +76,7 @@ class LoginForm extends Component {
             }
         }
         return (
-            <div className={"login-form-wrapper"} style={{marginBottom: 50}}>
+            <div className={"login-form-wrapper"} >
 
                 {!this.props.currentUser &&
                     <form  onSubmit={this.login.bind(this)} >
