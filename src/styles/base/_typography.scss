@@ -101,6 +101,14 @@ a {
   text-transform: uppercase;
 }
 
+label {
+  padding: 5px 0;
+}
+
+input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 input, label {
   display: block;
 }

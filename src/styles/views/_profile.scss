@@ -1,0 +1,12 @@
+.profile-info {
+  max-width: 300px;
+
+  h4 {
+    display: flex;
+    justify-content: space-between;
+
+    span:last-of-type {
+      font-weight: 300;
+    }
+  }
+}

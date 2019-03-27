@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import PasswordUpdateForm from '../components/user/PasswordUpdateForm'
+
 class Profile extends Component {
 
   render() {
@@ -25,6 +27,8 @@ class Profile extends Component {
             <span>{roles}</span>
           </h4>
         </div>
+
+        <PasswordUpdateForm email={this.props.currentUser.email} />
 
 
       </div>
