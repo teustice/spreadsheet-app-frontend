@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import LoginText from '../components/auth/LoginText';
 import LoginForm from '../components/auth/LoginForm';
 import SignupForm from '../components/auth/SignupForm';
+import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
 
 class Signin extends Component {
   constructor() {
@@ -20,9 +21,11 @@ class Signin extends Component {
           <SignupForm history={this.props.history}/> :
           <LoginForm history={this.props.history}/>
         }
-        <button class="btn btn-sm" onClick={() => this.setState({signup: !this.state.signup})}>
+        <button className="btn btn-sm" onClick={() => this.setState({signup: !this.state.signup})}>
           {this.state.signup ? 'log in' : 'sign up'}
         </button>
+
+        <ForgotPasswordForm />
       </div>
     )
   }

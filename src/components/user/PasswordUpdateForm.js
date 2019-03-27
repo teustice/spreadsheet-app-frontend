@@ -33,7 +33,7 @@ class PasswordUpdateForm extends Component {
           password: this.state.password,
           email: this.props.email
         }
-        fetch(`${apiUrl}/users/reset-password`, {
+        fetch(`${apiUrl}/users/update-password`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
