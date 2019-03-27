@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { setCurrentUser } from '../actions/setCurrentUser'
-import apiUrl from '../lib/apiUrl';
-import roles from '../lib/roles';
+import { setCurrentUser } from '../../actions/setCurrentUser'
+import apiUrl from '../../lib/apiUrl';
+import roles from '../../lib/roles';
 
 class SignupForm extends Component {
     constructor(props) {

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 
-import LoginText from '../components/LoginText';
-import LoginForm from '../components/LoginForm';
-import SignupForm from '../components/SignupForm';
+import LoginText from '../components/auth/LoginText';
+import LoginForm from '../components/auth/LoginForm';
+import SignupForm from '../components/auth/SignupForm';
 
 class Signin extends Component {
 

@@ -51,3 +51,21 @@ export function createTodo(state = [], action) {
       return state;
   }
 }
+
+export function updateTodo(state = [], action) {
+  switch (action.type) {
+    case 'UPDATE_TODOS_REQUEST':
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case 'UPDATE_TODOS_SUCCESS':
+      return {data: action.data};
+    case 'UPDATE_TODOS_FAILURE':
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: action.error
+      });
+    default:
+      return state;
+  }
+}

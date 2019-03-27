@@ -5,7 +5,9 @@ import ReactDataGrid from 'react-data-grid';
 import {
   getTodos,
   deleteTodo
-} from '../actions/todoActions'
+} from '../../actions/todoActions'
+import SimpleModal from '../SimpleModal'
+import TodoListForm from './TodoListForm'
 
 
 
@@ -14,13 +16,15 @@ class TodoList extends Component {
     super();
 
     this.state = {
-      rows: undefined
+      rows: undefined,
+      selectedTodo: undefined
     }
+
+    this.modal = React.createRef()
   }
 
   componentDidMount() {
     this.props.getTodos();
-
   }
 
   sortRows (initialRows, sortColumn, sortDirection, rows)  {
@@ -34,27 +38,44 @@ class TodoList extends Component {
     return sortDirection === "NONE" ? initialRows : [...rows].sort(comparer);
   };
 
+  editTodo(todo) {
+    this.setState({selectedTodo: todo});
+    this.modal.current.openModal()
+  }
+
+  deleteTodo(todo) {
+    if (window.confirm(`Are you sure you want to delete todo: ${todo.title}`)) {
+      this.props.deleteTodo(todo._id)
+    }
+  }
+
+  closeModal() {
+    this.modal.current.closeModal()
+  }
 
   render() {
     let that = this;
     const columns = [
-      { key: 'delete', name: 'Delete', sortable: true },
+      { key: 'modify', name: 'Modify', sortable: false },
       { key: 'title', name: 'Title', sortable: true },
       { key: 'text', name: 'Text', sortable: true } ];
 
 
     let rows = this.props.todos.data ? this.props.todos.data.map(function(todo, index){
-      let deleteButton = todo.user._id === that.props.currentUser._id ?
-          <span style={{color: 'crimson'}} onClick={() => that.props.deleteTodo(todo._id)}>X</span> :
-            '';
+      let modifyButtons = todo.user._id === that.props.currentUser._id ?
+        <div>
+          <span style={{color: 'crimson'}} onClick={() => that.deleteTodo(todo)}>X</span>
+          <span style={{color: 'green'}} onClick={() => that.editTodo(todo)}> Edit</span>
+        </div> : '';
 
           return {
-            delete: deleteButton,
+            modify: modifyButtons,
             title: todo.title,
             text: todo.text}
       }) : '';
       let filteredrows = rows;
       return (
+        <React.Fragment>
           <div className={"todo-list-wrapper"}>
             {rows &&
               <ReactDataGrid
@@ -68,6 +89,10 @@ class TodoList extends Component {
                 />
             }
           </div>
+          <SimpleModal ref={this.modal} isOpen={false}>
+            <TodoListForm editMode={true} todo={this.state.selectedTodo} submitCallback={this.closeModal.bind(this)}/>
+          </SimpleModal>
+        </React.Fragment>
       );
   }
 }

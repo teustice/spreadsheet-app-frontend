@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { setCurrentUser } from '../actions/setCurrentUser'
-import apiUrl from '../lib/apiUrl';
+import { setCurrentUser } from '../../actions/setCurrentUser'
+import apiUrl from '../../lib/apiUrl';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -59,7 +59,6 @@ class LoginForm extends Component {
     }
 
     resetCurrentUser() {
-      console.log(this.props);
       localStorage.removeItem('currentUser')
       this.props.setCurrentUser(null);
       this.props.history.push('/signin')

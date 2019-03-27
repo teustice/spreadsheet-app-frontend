@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setCurrentUser } from '../actions/setCurrentUser'
-
-import LoginForm from '../components/LoginForm'
+import { setCurrentUser } from '../../actions/setCurrentUser'
 
 export default function (ComposedComponent) {
   class Authenticate extends React.Component {
