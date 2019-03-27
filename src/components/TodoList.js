@@ -1,39 +1,75 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import ReactDataGrid from 'react-data-grid';
 
 import {
   getTodos,
   deleteTodo
 } from '../actions/todoActions'
 
+
+
 class TodoList extends Component {
+  constructor() {
+    super();
 
-    componentDidMount() {
-      this.props.getTodos()
+    this.state = {
+      rows: undefined
     }
+  }
 
-    render() {
-      let that = this;
-      let todos = this.props.todos.data ? this.props.todos.data.map(function(todo, index){
-            return (
-                <div key={index} className='todo'>
-                    <h3>
-                      {(todo.user._id === that.props.currentUser._id) &&
-                        <span style={{color: 'crimson'}} onClick={() => that.props.deleteTodo(todo._id)}>X</span>
-                      }
-                      {todo.title}
-                    </h3>
-                    <p>{todo.text}</p>
-                    <p>posted by: <i>{todo.user.email}</i></p>
-                </div>
-            )
-        }) : undefined;
-        return (
-            <div className={"todo-list-wrapper"}>
-                {todos}
-            </div>
-        );
-    }
+  componentDidMount() {
+    this.props.getTodos();
+
+  }
+
+  sortRows (initialRows, sortColumn, sortDirection, rows)  {
+    const comparer = (a, b) => {
+      if (sortDirection === "ASC") {
+        return a[sortColumn] > b[sortColumn] ? 1 : -1;
+      } else if (sortDirection === "DESC") {
+        return a[sortColumn] < b[sortColumn] ? 1 : -1;
+      }
+    };
+    return sortDirection === "NONE" ? initialRows : [...rows].sort(comparer);
+  };
+
+
+  render() {
+    let that = this;
+    const columns = [
+      { key: 'delete', name: 'Delete', sortable: true },
+      { key: 'title', name: 'Title', sortable: true },
+      { key: 'text', name: 'Text', sortable: true } ];
+
+
+    let rows = this.props.todos.data ? this.props.todos.data.map(function(todo, index){
+      let deleteButton = todo.user._id === that.props.currentUser._id ?
+          <span style={{color: 'crimson'}} onClick={() => that.props.deleteTodo(todo._id)}>X</span> :
+            '';
+
+          return {
+            delete: deleteButton,
+            title: todo.title,
+            text: todo.text}
+      }) : '';
+      let filteredrows = rows;
+      return (
+          <div className={"todo-list-wrapper"}>
+            {rows &&
+              <ReactDataGrid
+                columns={columns}
+                rowGetter={i => filteredrows[i]}
+                rowsCount={rows.length}
+                minHeight={400}
+                onGridSort={(sortColumn, sortDirection) =>
+                  filteredrows = this.sortRows(rows, sortColumn, sortDirection, filteredrows)
+                }
+                />
+            }
+          </div>
+      );
+  }
 }
 
 

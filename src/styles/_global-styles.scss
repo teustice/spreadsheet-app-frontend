@@ -179,3 +179,9 @@ body.noscroll{
   -moz-font-smoothing: antialiased;
   -o-font-smoothing: antialiased;
 }
+
+.react-grid-Container {
+  div {
+    font-size: 1.5rem;
+  }
+}
