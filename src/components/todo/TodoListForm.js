@@ -41,6 +41,9 @@ class TodoListForm extends Component {
         }
       }
 
+
+      this.setState({title: '', text: ''})
+
     }
 
     updateTitle(e) {
@@ -54,17 +57,23 @@ class TodoListForm extends Component {
 
     render() {
         return (
-            <div className={"todo-list-form"}>
+            <div className={this.props.editMode ? "todo-list-edit-form" : "todo-list-form"}>
               <form  onSubmit={this.addTodo.bind(this)} >
                   <h3>{this.props.editMode ? 'Edit' : 'Add'} todo</h3>
-                  {this.props.todo &&
-                    <p>Editing Todo id: {this.props.todo._id}</p>
-                  }
-                  <label>Title</label>
-                  <input name="title" type='text' value={this.state.title} onChange={this.updateTitle.bind(this)} />
-                  <label>Text</label>
-                  <textarea name="text" type='text' value={this.state.text} onChange={this.updateText.bind(this)} />
-                  <button type='submit'>{this.props.editMode ? 'Update' : 'Add'}</button>
+                  <div className="form-group">
+                    {this.props.todo &&
+                      <p>Editing Todo id: {this.props.todo._id}</p>
+                    }
+                    <div className="input-wrapper">
+                      <label>Title</label>
+                      <input name="title" type='text' value={this.state.title} onChange={this.updateTitle.bind(this)} />
+                    </div>
+                    <div className="input-wrapper">
+                      <label>Text</label>
+                      <textarea name="text" type='text' value={this.state.text} onChange={this.updateText.bind(this)} />
+                    </div>
+                    <button type='submit' className="btn">{this.props.editMode ? 'Update' : 'Add'}</button>
+                  </div>
                   <p>{this.state.errors}</p>
               </form>
             </div>

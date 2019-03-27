@@ -15,6 +15,12 @@
   overflow: hidden;
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   display: inline-block;
+
+  &-sm {
+    font-size: .8rem;
+    padding: 5px 15px;
+  }
+
   &:hover {
     color: $white;
   }

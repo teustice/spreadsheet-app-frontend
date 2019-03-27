@@ -6,10 +6,14 @@ import {
   deleteTodo,
   createTodo
 } from './todos';
+import {
+  users
+} from './users';
 
 export default combineReducers({
   currentUser,
   todos,
   deleteTodo,
-  createTodo
+  createTodo,
+  users
 })

@@ -16,7 +16,6 @@ class LoginText extends Component {
                 {this.props.currentUser &&
                   <div>
                     <p>Hello, {this.props.currentUser.email}</p>
-                    <p>Here are your roles: {roles}</p>
                   </div>
                 }
             </div>

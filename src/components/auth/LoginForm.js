@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { setCurrentUser } from '../../actions/setCurrentUser'
 import apiUrl from '../../lib/apiUrl';
+import LogoutButton from './LogoutButton'
 
 class LoginForm extends Component {
     constructor(props) {
@@ -84,12 +85,13 @@ class LoginForm extends Component {
                         <input name="email" type='text' onKeyUp={this.updateEmail.bind(this)} />
                         <label>Password</label>
                         <input name="password" type='password' onKeyUp={this.updatePassword.bind(this)} />
-                        <button type='submit'>Log In</button>
+                        <br />
+                        <button type='submit' className="btn btn-sm">Log In</button>
                         <div>{errors}</div>
                     </form>
                 }
                 {this.props.currentUser &&
-                    <button onClick={this.resetCurrentUser.bind(this)}>Log Out</button>
+                    <LogoutButton history={this.props.history}/>
                 }
             </div>
         );

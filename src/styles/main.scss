@@ -12,6 +12,9 @@
 //COMPONENTS
 @import "components/nprogress";
 @import "components/scrollbar";
+@import "components/header";
+@import "components/todo-form";
 
 //VIEWS
 @import 'views/home';
+@import 'views/admin-dashboard';

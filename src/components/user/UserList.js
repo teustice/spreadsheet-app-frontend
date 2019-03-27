@@ -3,15 +3,13 @@ import { connect } from 'react-redux';
 import ReactDataGrid from 'react-data-grid';
 
 import {
-  getTodos,
-  deleteTodo
-} from '../../actions/todoActions'
+  getUsers
+} from '../../actions/userActions'
 import SimpleModal from '../SimpleModal'
-import TodoListForm from './TodoListForm'
 
 
 
-class TodoList extends Component {
+class UserList extends Component {
   constructor() {
     super();
 
@@ -24,7 +22,9 @@ class TodoList extends Component {
   }
 
   componentDidMount() {
-    this.props.getTodos();
+    if(this.props.currentUser) {
+      this.props.getUsers(this.props.currentUser.token);
+    }
   }
 
   sortRows (initialRows, sortColumn, sortDirection, rows)  {
@@ -57,17 +57,17 @@ class TodoList extends Component {
     let that = this;
     const columns = [
       { key: 'modify', name: 'Modify', sortable: false },
-      { key: 'title', name: 'Title', sortable: true },
-      { key: 'text', name: 'Text', sortable: true },
-      { key: 'user', name: 'User', sortable: true } ];
+      { key: 'email', name: 'Email', sortable: true },
+      { key: 'roles', name: 'Roles', sortable: true },
+      { key: 'id', name: 'ID', sortable: false } ];
 
     let modifyButtons;
-    let rows = this.props.todos.data ? this.props.todos.data.map(function(todo, index){
-      if(todo.user._id === that.props.currentUser._id || that.props.currentUser.roles.admin) {
+    let rows = this.props.users.data ? this.props.users.data.map(function(user, index){
+      if(that.props.currentUser.roles.admin) {
         modifyButtons = (
           <div>
-            <span style={{color: 'crimson'}} onClick={() => that.deleteTodo(todo)}>X</span>
-            <span style={{color: 'green'}} onClick={() => that.editTodo(todo)}> Edit</span>
+            <span style={{color: 'crimson'}} onClick={() => that.deleteTodo(user)}>X</span>
+            <span style={{color: 'green'}} onClick={() => that.editTodo(user)}> Edit</span>
           </div>
         );
       } else {
@@ -75,14 +75,16 @@ class TodoList extends Component {
       }
       return {
         modify: modifyButtons,
-        title: todo.title,
-        text: todo.text,
-        user: todo.user.email}
+        email: user.email,
+        roles: Object.keys(user.roles).map(function(role){
+          return ' ' + role + ' ';
+        }),
+        id: user._id}
       }) : '';
       let filteredrows = rows;
       return (
         <React.Fragment>
-          <div className={"todo-list-wrapper"}>
+          <div className={"user-list-wrapper"}>
             {rows &&
               <ReactDataGrid
                 columns={columns}
@@ -95,9 +97,6 @@ class TodoList extends Component {
                 />
             }
           </div>
-          <SimpleModal ref={this.modal} isOpen={false}>
-            <TodoListForm editMode={true} todo={this.state.selectedTodo} submitCallback={this.closeModal.bind(this)}/>
-          </SimpleModal>
         </React.Fragment>
       );
   }
@@ -110,9 +109,8 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  getTodos: () => dispatch(getTodos()),
-  deleteTodo: (id) => dispatch(deleteTodo(id)),
+  getUsers: (token) => dispatch(getUsers(token)),
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+export default connect(mapStateToProps, mapDispatchToProps)(UserList);

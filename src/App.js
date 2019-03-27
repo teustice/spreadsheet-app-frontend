@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import './styles/main.scss';
 import { withRouter } from 'react-router-dom';
 import Routes from './lib/Routes';
-
+import Header from './components/Header';
 
 class App extends Component {
   render() {
     return (
       <div className="global-wrapper">
+        <Header history={this.props.history}/>
         <Routes location={this.props.location}/>
       </div>
     );

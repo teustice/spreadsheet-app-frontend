@@ -11,10 +11,6 @@ class Home extends Component {
   render() {
     return(
       <div className="container">
-        <LoginText />
-        <LoginForm history={this.props.history}/>
-        <SignupForm />
-
         <TodoList />
         <TodoListForm />
 

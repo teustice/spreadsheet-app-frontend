@@ -104,7 +104,8 @@ class SignupForm extends Component {
                       <label>Roles</label>
                       {rolesCheckboxes}
                     </div>
-                    <button type='submit'>Sign Up</button>
+                    <br />
+                    <button className="btn btn-sm" type='submit'>Sign Up</button>
                     <div>{errors}</div>
                 </form>
 
