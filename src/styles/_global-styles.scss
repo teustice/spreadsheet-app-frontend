@@ -187,3 +187,21 @@ body.noscroll{
     font-size: 1.5rem;
   }
 }
+
+table {
+  max-width: 100%;
+  max-height: 600px;
+  overflow: scroll;
+  display: block;
+}
+td {
+  min-width: 80px;
+  padding: 5px;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  font-size: 1.3rem;
+
+  &:last-of-type {
+    border-right: 0;
+  }
+}

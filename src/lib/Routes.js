@@ -10,6 +10,7 @@ import Profile from '../views/Profile';
 import AdminDashboard from '../views/AdminDashboard';
 import Signin from '../views/Signin'
 import ResetPassword from '../views/ResetPassword'
+import Test from '../views/Test'
 import PageNotFound from '../views/PageNotFound';
 
 // import GridLines from '../components/GridLines';
@@ -36,6 +37,7 @@ class Routes extends Component {
         <CSSTransition key={this.props.location.key} classNames="fade" timeout={300}>
           <Switch location={this.props.location}>
             <Route exact path='/' component={requireAuth(Home)}/>
+            <Route exact path='/test' component={Test}/>
             <Route exact path='/profile' component={requireAuth(Profile)}/>
             <Route exact path='/admin' component={requireAdmin(AdminDashboard)}/>
             <Route exact path='/signin' component={Signin}/>
