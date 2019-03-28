@@ -21,12 +21,10 @@ class ResetPassword extends Component {
           }
       })
       .then(function(res) {
-        console.log(res);
         return res.json();
       })
       .then(function(json) {
           if(!json.errors && json.user) {
-            console.log(json.user);
             that.props.setCurrentUser(json.user)
             localStorage.setItem('currentUser', JSON.stringify(json.user));
           }

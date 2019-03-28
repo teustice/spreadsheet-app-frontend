@@ -16,6 +16,11 @@
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   display: inline-block;
 
+  &.disable {
+    opacity: .5;
+    pointer-events: none;
+  }
+
   &-sm {
     font-size: .8rem;
     padding: 5px 15px;

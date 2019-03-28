@@ -13,6 +13,7 @@ class ForgotPasswordForm extends Component {
         this.state = {
             email: '',
             showForm: false,
+            loading: false,
             errors: undefined,
         }
     }
@@ -21,6 +22,8 @@ class ForgotPasswordForm extends Component {
       e.preventDefault();
       let body;
       let that = this;
+
+      this.setState({loading: true});
 
       if(this.state.email){
         body = {
@@ -39,8 +42,10 @@ class ForgotPasswordForm extends Component {
                 if(res.ok) {
                   that.setState({errors: {error: `Email to reset password has been sent to ${that.state.email}`}})
                   that.setState({email: ''})
+                  this.setState({loading: false});
                 } else {
                   that.setState({errors: {error: `There is no account associated with ${that.state.email}`}})
+                  this.setState({loading: false});
 
                 }
             })
@@ -77,7 +82,7 @@ class ForgotPasswordForm extends Component {
                     <label>Email</label>
                     <input name="email" type='text' value={this.state.email} onChange={this.updateEmail.bind(this)} required />
                   </div>
-                  <button type='submit' className="btn btn-sm">Reset Password</button>
+                  <button type='submit' className={`btn btn-sm ${this.state.loading ? 'disable' : ''}`}>Reset Password</button>
                 </div>
                 <div>{errors}</div>
               </form>
