@@ -1,52 +1,64 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import apiUrl from '../lib/apiUrl';
+import { setCurrentUser } from '../actions/setCurrentUser'
 
-import LoginText from '../components/auth/LoginText';
-import LoginForm from '../components/auth/LoginForm';
-import SignupForm from '../components/auth/SignupForm';
 import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
+import PasswordUpdateForm from '../components/user/PasswordUpdateForm';
 
 class ResetPassword extends Component {
-  constructor() {
-    super()
-    this.state = {
-      user: undefined
-    }
-  }
 
   componentDidMount() {
+    let that = this;
     if(this.props.match.params.token) {
       let token = this.props.match.params.token;
 
-      // fetch(`${apiUrl}/users/forgot`, {
-      //     method: 'POST',
-      //     headers: {
-      //         'Accept': 'application/json',
-      //         'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify(body)
-      // })
-      //     .then(function(res) {
-      //       console.log(res);
-      //         if(res.ok) {
-      //           that.setState({errors: {error: `Email to reset password has been sent to ${that.state.email}`}})
-      //           that.setState({email: ''})
-      //         } else {
-      //           that.setState({errors: {error: `There is no account associated with ${that.state.email}`}})
-      //
-      //         }
-      //     })
-      //     .catch(error => console.error('Error:', error));
+      fetch(`${apiUrl}/users/reset-password/${token}`, {
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          }
+      })
+      .then(function(res) {
+        console.log(res);
+        return res.json();
+      })
+      .then(function(json) {
+          if(!json.errors && json.user) {
+            console.log(json.user);
+            that.props.setCurrentUser(json.user)
+            localStorage.setItem('currentUser', JSON.stringify(json.user));
+          }
+      })
+      .catch(error => console.error('Error:', error));
     }
   }
 
   render() {
     return(
       <div className="container">
-        <ForgotPasswordForm />
+        {!this.props.currentUser &&
+          <div>
+            <p>Something went wrong! Try resending the email below.</p>
+            <ForgotPasswordForm />
+          </div>
+        }
+        {this.props.currentUser &&
+          <PasswordUpdateForm email={this.props.currentUser.email}/>
+        }
       </div>
     )
   }
 }
 
 
-export default (ResetPassword);
+const mapStateToProps = state => ({
+ ...state
+})
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: (val) => dispatch(setCurrentUser(val)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);
