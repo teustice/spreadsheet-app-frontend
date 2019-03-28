@@ -69,7 +69,6 @@ class PasswordUpdateForm extends Component {
 
 
     render() {
-      console.log(this.state);
       let errors = [];
       if(this.state.errors) {
           for(var error in this.state.errors){

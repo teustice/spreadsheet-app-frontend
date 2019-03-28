@@ -35,11 +35,13 @@ class ForgotPasswordForm extends Component {
             body: JSON.stringify(body)
         })
             .then(function(res) {
+              console.log(res);
                 if(res.ok) {
-                  that.setState({errors: {error: `Email to reset password has been sent to ${this.state.email}`}})
+                  that.setState({errors: {error: `Email to reset password has been sent to ${that.state.email}`}})
                   that.setState({email: ''})
                 } else {
-                  that.setState({errors: res})
+                  that.setState({errors: {error: `There is no account associated with ${that.state.email}`}})
+
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -56,6 +58,7 @@ class ForgotPasswordForm extends Component {
 
 
     render() {
+      console.log(this.state);
       let errors = [];
       if(this.state.errors) {
           for(var error in this.state.errors){
