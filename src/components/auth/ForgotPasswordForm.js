@@ -42,10 +42,10 @@ class ForgotPasswordForm extends Component {
                 if(res.ok) {
                   that.setState({errors: {error: `Email to reset password has been sent to ${that.state.email}`}})
                   that.setState({email: ''})
-                  this.setState({loading: false});
+                  that.setState({loading: false});
                 } else {
                   that.setState({errors: {error: `There is no account associated with ${that.state.email}`}})
-                  this.setState({loading: false});
+                  that.setState({loading: false});
 
                 }
             })
