@@ -12,11 +12,12 @@ import TodoListForm from './TodoListForm'
 
 
 class TodoList extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      rows: undefined,
+      rows: this.props.todos,
+      selectedIndexes: [],
       selectedTodo: undefined
     }
 
@@ -27,7 +28,15 @@ class TodoList extends Component {
     this.props.getTodos();
   }
 
+  static getDerivedStateFromProps(nextProps, prevState){
+     if(nextProps.rows !== prevState.rows){
+       return { rows: nextProps.todos};
+    }
+    else return null;
+  }
+
   sortRows (initialRows, sortColumn, sortDirection, rows)  {
+    console.log(initialRows);
     const comparer = (a, b) => {
       if (sortDirection === "ASC") {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -35,7 +44,28 @@ class TodoList extends Component {
         return a[sortColumn] < b[sortColumn] ? 1 : -1;
       }
     };
-    return sortDirection === "NONE" ? initialRows : [...rows].sort(comparer);
+    return sortDirection === "NONE" ? initialRows : rows.sort(comparer);
+  };
+
+  rowGetter = i => {
+    return this.state.rows[i];
+  };
+
+  onRowsSelected = rows => {
+    this.setState({
+      selectedIndexes: this.state.selectedIndexes.concat(
+        rows.map(r => r.rowIdx)
+      )
+    });
+  };
+
+  onRowsDeselected = rows => {
+    let rowIndexes = rows.map(r => r.rowIdx);
+    this.setState({
+      selectedIndexes: this.state.selectedIndexes.filter(
+        i => rowIndexes.indexOf(i) === -1
+      )
+    });
   };
 
   editTodo(todo) {
@@ -56,13 +86,14 @@ class TodoList extends Component {
   render() {
     let that = this;
     const columns = [
-      { key: 'modify', name: 'Modify', sortable: false },
       { key: 'title', name: 'Title', sortable: true },
       { key: 'text', name: 'Text', sortable: true },
-      { key: 'user', name: 'User', sortable: true } ];
+      { key: 'user', name: 'User', sortable: true },
+      { key: 'modify', name: 'Modify', sortable: false, width: 100 },
+    ];
 
     let modifyButtons;
-    let rows = this.props.todos.data ? this.props.todos.data.map(function(todo, index){
+    let rows = this.state.rows.data ? this.state.rows.data.map(function(todo, index){
       if(todo.user._id === that.props.currentUser._id || that.props.currentUser.roles.admin) {
         modifyButtons = (
           <div>
@@ -79,19 +110,27 @@ class TodoList extends Component {
         text: todo.text,
         user: todo.user.email}
       }) : '';
-      let filteredrows = rows;
       return (
         <React.Fragment>
           <div className={"todo-list-wrapper"}>
-            {rows &&
+            {this.state.rows &&
               <ReactDataGrid
                 columns={columns}
-                rowGetter={i => filteredrows[i]}
+                rowGetter={i => rows[i]}
                 rowsCount={rows.length}
-                minHeight={400}
+                minHeight={500}
                 onGridSort={(sortColumn, sortDirection) =>
-                  filteredrows = this.sortRows(rows, sortColumn, sortDirection, filteredrows)
+                  this.setState({rows: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)})
                 }
+                rowSelection={{
+                  showCheckbox: true,
+                  enableShiftSelect: true,
+                  onRowsSelected: this.onRowsSelected,
+                  onRowsDeselected: this.onRowsDeselected,
+                  selectBy: {
+                    indexes: this.state.selectedIndexes
+                  }
+                }}
                 />
             }
           </div>
