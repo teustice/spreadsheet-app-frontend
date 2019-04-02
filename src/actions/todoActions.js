@@ -18,8 +18,9 @@ export function getTodos() {
             type: 'GET_TODOS_SUCCESS',
             data: body
           });
+
         }
-      });
+      })
   }
 }
 

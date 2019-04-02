@@ -9,14 +9,22 @@ import {
 import SimpleModal from '../SimpleModal'
 import TodoListForm from './TodoListForm'
 
-
+// function iterationCopy(src) {
+//   let target = {};
+//   for (let prop in src) {
+//     if (src.hasOwnProperty(prop)) {
+//       target[prop] = src[prop];
+//     }
+//   }
+//   return target;
+// }
 
 class TodoList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      rows: this.props.todos,
+      rows: [],
       selectedIndexes: [],
       selectedTodo: undefined
     }
@@ -25,18 +33,15 @@ class TodoList extends Component {
   }
 
   componentDidMount() {
-    this.props.getTodos();
+    //map todos from props to state for sorting
+    this.props.getTodos().then(this.mapTodosToState.bind(this));
   }
 
-  static getDerivedStateFromProps(nextProps, prevState){
-     if(nextProps.rows !== prevState.rows){
-       return { rows: nextProps.todos};
-    }
-    else return null;
+  mapTodosToState() {
+    this.setState({rows: {data: this.props.todos.data.slice()}})
   }
 
   sortRows (initialRows, sortColumn, sortDirection, rows)  {
-    console.log(initialRows);
     const comparer = (a, b) => {
       if (sortDirection === "ASC") {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -44,7 +49,7 @@ class TodoList extends Component {
         return a[sortColumn] < b[sortColumn] ? 1 : -1;
       }
     };
-    return sortDirection === "NONE" ? initialRows : rows.sort(comparer);
+    return sortDirection === "NONE" ? this.props.todos.data.slice() : rows.sort(comparer);
   };
 
   rowGetter = i => {
@@ -120,7 +125,7 @@ class TodoList extends Component {
                 rowsCount={rows.length}
                 minHeight={500}
                 onGridSort={(sortColumn, sortDirection) =>
-                  this.setState({rows: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)})
+                  this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)}})
                 }
                 rowSelection={{
                   showCheckbox: true,
