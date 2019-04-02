@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import ReactDataGrid from 'react-data-grid';
+import { Toolbar, Data } from "react-data-grid-addons";
 
 import {
   getTodos,
@@ -9,15 +10,23 @@ import {
 import SimpleModal from '../SimpleModal'
 import TodoListForm from './TodoListForm'
 
-// function iterationCopy(src) {
-//   let target = {};
-//   for (let prop in src) {
-//     if (src.hasOwnProperty(prop)) {
-//       target[prop] = src[prop];
-//     }
-//   }
-//   return target;
-// }
+const selectors = Data.Selectors;
+
+
+function handleFilterChange(filter, filters) {
+  const newFilters = { ...filters };
+  if (filter.filterTerm) {
+    newFilters[filter.column.key] = filter;
+  } else {
+    delete newFilters[filter.column.key];
+  }
+  return newFilters;
+};
+
+function getRows(rows, filters) {
+  return selectors.getRows({ rows, filters });
+};
+
 
 class TodoList extends Component {
   constructor(props) {
@@ -27,7 +36,8 @@ class TodoList extends Component {
       rows: [],
       initialRows: [],
       selectedIndexes: [],
-      selectedTodo: undefined
+      selectedTodo: undefined,
+      filters: {}
     }
 
     this.modal = React.createRef()
@@ -99,17 +109,19 @@ class TodoList extends Component {
     this.modal.current.closeModal()
   }
 
+
+
   render() {
     let that = this;
     const columns = [
-      { key: 'title', name: 'Title', sortable: true },
-      { key: 'text', name: 'Text', sortable: true },
-      { key: 'user', name: 'User', sortable: true },
+      { key: 'title', name: 'Title', sortable: true, filterable: true },
+      { key: 'text', name: 'Text', sortable: true, filterable: true },
+      { key: 'user', name: 'User', sortable: true, filterable: true },
       { key: 'modify', name: 'Modify', sortable: false, width: 100 },
     ];
 
     let modifyButtons;
-    let rows = this.state.rows.data ? this.state.rows.data.map(function(todo, index){
+    let rows = this.state.rows.data ? getRows(this.state.rows.data, this.state.filters).map(function(todo, index){
       if(todo.user._id === that.props.currentUser._id || that.props.currentUser.roles.admin) {
         modifyButtons = (
           <div>
@@ -138,6 +150,9 @@ class TodoList extends Component {
                 onGridSort={(sortColumn, sortDirection) =>
                   this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)}})
                 }
+                toolbar={<Toolbar enableFilter={true} />}
+                onAddFilter={filter => this.setState({ filters: handleFilterChange(filter) })}
+                onClearFilters={() => this.setState({ filters: {} })}
                 rowSelection={{
                   showCheckbox: true,
                   enableShiftSelect: true,
