@@ -4,7 +4,9 @@ import currentUser from './currentUser';
 import {
   todos,
   deleteTodo,
-  createTodo
+  deleteTodoBatch,
+  createTodo,
+  createTodoBatch
 } from './todos';
 import {
   users
@@ -14,6 +16,8 @@ export default combineReducers({
   currentUser,
   todos,
   deleteTodo,
+  deleteTodoBatch,
   createTodo,
+  createTodoBatch,
   users
 })

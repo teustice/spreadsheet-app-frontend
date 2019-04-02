@@ -16,6 +16,42 @@ export function todos(state = [], action) {
   }
 }
 
+export function createTodo(state = [], action) {
+  switch (action.type) {
+    case 'CREATE_TODOS_REQUEST':
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case 'CREATE_TODOS_SUCCESS':
+      return {data: action.data};
+    case 'CREATE_TODOS_FAILURE':
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: action.error
+      });
+    default:
+      return state;
+  }
+}
+
+export function createTodoBatch(state = [], action) {
+  switch (action.type) {
+    case 'CREATE_TODOS_BATCH_REQUEST':
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case 'CREATE_TODOS_BATCH_SUCCESS':
+      return {data: action.data};
+    case 'CREATE_TODOS_BATCH_FAILURE':
+      return Object.assign({}, state, {
+        isFetching: false,
+        error: action.error
+      });
+    default:
+      return state;
+  }
+}
+
 export function deleteTodo(state = [], action) {
   switch (action.type) {
     case 'DELETE_TODOS_REQUEST':
@@ -34,15 +70,15 @@ export function deleteTodo(state = [], action) {
   }
 }
 
-export function createTodo(state = [], action) {
+export function deleteTodoBatch(state = [], action) {
   switch (action.type) {
-    case 'CREATE_TODOS_REQUEST':
+    case 'DELETE_TODOS_BATCH_REQUEST':
       return Object.assign({}, state, {
         isFetching: true
       });
-    case 'CREATE_TODOS_SUCCESS':
+    case 'DELETE_TODOS_BATCH_SUCCESS':
       return {data: action.data};
-    case 'CREATE_TODOS_FAILURE':
+    case 'DELETE_TODOS_BATCH_FAILURE':
       return Object.assign({}, state, {
         isFetching: false,
         error: action.error

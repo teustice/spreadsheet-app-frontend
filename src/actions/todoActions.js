@@ -55,6 +55,38 @@ export function createTodo(body, callback) {
   }
 }
 
+export function createTodoBatch(body, callback) {
+  return function(dispatch) {
+    dispatch({
+      type: 'CREATE_TODOS_BATCH_REQUEST'
+    });
+    return fetch(`${apiUrl}/todos/batch`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+      .then(response => response.json().then(body => ({ response, body })))
+      .then(({ response, body }) => {
+        if (!response.ok) {
+          dispatch({
+            type: 'CREATE_TODOS_BATCH_FAILURE',
+            error: body.error
+          });
+        } else {
+          dispatch({
+            type: 'CREATE_TODOS_BATCH_SUCCESS',
+            data: body
+          });
+          dispatch(getTodos());
+          callback && callback();
+        }
+      });
+  }
+}
+
 export function updateTodo(body, id) {
   return function(dispatch) {
     dispatch({
@@ -108,6 +140,37 @@ export function deleteTodo(id) {
         } else {
           dispatch({
             type: 'DELETE_TODOS_SUCCESS',
+            data: body
+          });
+          dispatch(getTodos());
+        }
+      });
+  }
+}
+
+export function deleteTodoBatch(idArray) {
+  return function(dispatch) {
+    dispatch({
+      type: 'DELETE_TODOS_BATCH_REQUEST'
+    });
+    return fetch(`${apiUrl}/todos/batch-delete`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(idArray)
+    })
+      .then(response => response.json().then(body => ({ response, body })))
+      .then(({ response, body }) => {
+        if (!response.ok) {
+          dispatch({
+            type: 'DELETE_TODOS_BATCH_FAILURE',
+            error: body.error
+          });
+        } else {
+          dispatch({
+            type: 'DELETE_TODOS_BATCH_SUCCESS',
             data: body
           });
           dispatch(getTodos());

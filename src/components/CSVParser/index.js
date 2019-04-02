@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import CSVReader from "react-csv-reader";
 
-import {getTodos} from '../../actions/todoActions'
+import {createTodoBatch} from '../../actions/todoActions'
 import apiUrl from '../../lib/apiUrl';
 
 class CSVParser extends Component {
@@ -22,7 +22,6 @@ class CSVParser extends Component {
     } else {
       this.setState({data: data});
       this.validateData();
-      console.log(data);
     }
   };
 
@@ -56,10 +55,10 @@ class CSVParser extends Component {
   uploadCSV() {
     let that = this;
     if(this.validateData()) {
-      console.log('uploading');
+      let body = [];
       let data = this.state.data.slice();
       data.shift(); //remove headers
-      let body = [];
+
       data.forEach(function(entry, index) {
         body.push({
           title: entry[0],
@@ -68,25 +67,9 @@ class CSVParser extends Component {
         })
       })
 
-      fetch(`${apiUrl}/todos/batch`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-        .then(response => response.json().then(body => ({ response, body })))
-        .then(({ response, body }) => {
-          console.log(response);
-          if (response.ok) {
-            console.log('uploaded');
-            that.props.getTodos()
-          } else {
-            console.log('error');
-          }
-        });
-
+      this.props.createTodoBatch(body, function() {
+        that.setState({data: []})
+      });
     }
   }
 
@@ -145,7 +128,7 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  getTodos: () => dispatch(getTodos())
+  createTodoBatch: (todoArray, callback) => dispatch(createTodoBatch(todoArray, callback))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CSVParser);

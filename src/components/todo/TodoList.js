@@ -5,10 +5,13 @@ import { Toolbar, Data } from "react-data-grid-addons";
 
 import {
   getTodos,
-  deleteTodo
+  deleteTodo,
+  deleteTodoBatch
 } from '../../actions/todoActions'
 import SimpleModal from '../SimpleModal'
 import TodoListForm from './TodoListForm'
+import LoadingSpinner from '../LoadingSpinner'
+import TableToolbar from '../TableToolbar'
 
 const selectors = Data.Selectors;
 
@@ -109,10 +112,24 @@ class TodoList extends Component {
     this.modal.current.closeModal()
   }
 
+  bulkAction(action) {
+    let that = this;
+    switch (action) {
+      case 'DELETE':
+        if (window.confirm(`Are you sure you want to delete the selected items?`)) {
+          let idArray = [];
+          this.state.selectedIndexes.forEach(function(i){
+            idArray.push(that.state.rows.data[i]._id);
+          })
+          that.props.deleteTodoBatch(idArray);
+        }
+        break;
+      default:
 
+    }
+  }
 
   render() {
-    console.log(this.state.rows.data && this.state.rows.data.length);
     let that = this;
     const columns = [
       { key: 'title', name: 'Title', sortable: true, filterable: true },
@@ -141,32 +158,33 @@ class TodoList extends Component {
       }) : '';
       return (
         <React.Fragment>
-          <div className={"todo-list-wrapper"}>
-            {this.state.rows &&
-              <ReactDataGrid
-                columns={columns}
-                rowGetter={i => rows[i]}
-                rowsCount={rows.length}
-                minHeight={500}
-                onGridSort={(sortColumn, sortDirection) =>
-                  this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)}})
-                }
-                toolbar={<Toolbar enableFilter={true} />}
-                onAddFilter={filter => this.setState({ filters: handleFilterChange(filter) })}
-                onClearFilters={() => this.setState({ filters: {} })}
-                rowSelection={{
-                  showCheckbox: true,
-                  enableShiftSelect: true,
-                  onRowsSelected: this.onRowsSelected,
-                  onRowsDeselected: this.onRowsDeselected,
-                  selectBy: {
-                    indexes: this.state.selectedIndexes
+            {this.state.rows.data ?
+              <div className={"todo-list-wrapper"}>
+                <ReactDataGrid
+                  columns={columns}
+                  rowGetter={i => rows[i]}
+                  rowsCount={rows.length}
+                  minHeight={500}
+                  onGridSort={(sortColumn, sortDirection) =>
+                    this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)}})
                   }
-                }}
-                />
+                  toolbar={<TableToolbar selected={this.state.selectedIndexes} bulkDelete={() => this.bulkAction('DELETE')} enableFilter={true} />}
+                  onAddFilter={filter => this.setState({ filters: handleFilterChange(filter) })}
+                  onClearFilters={() => this.setState({ filters: {} })}
+                  rowSelection={{
+                    showCheckbox: true,
+                    enableShiftSelect: true,
+                    onRowsSelected: this.onRowsSelected,
+                    onRowsDeselected: this.onRowsDeselected,
+                    selectBy: {
+                      indexes: this.state.selectedIndexes
+                    }
+                  }}
+                  />
+                  <TodoListForm submitCallback={() => this.props.getTodos().then(this.mapTodosToState.bind(this))}/>
+                </div> :
+                <LoadingSpinner />
             }
-          </div>
-          <TodoListForm submitCallback={() => this.props.getTodos().then(this.mapTodosToState.bind(this))}/>
 
           <SimpleModal ref={this.modal} isOpen={false}>
             <TodoListForm editMode={true} todo={this.state.selectedTodo} submitCallback={this.closeModal.bind(this)}/>
@@ -185,6 +203,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getTodos: () => dispatch(getTodos()),
   deleteTodo: (id) => dispatch(deleteTodo(id)),
+  deleteTodoBatch: (idArray) => dispatch(deleteTodoBatch(idArray)),
 })
 
 
