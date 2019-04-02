@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 
-import LoginText from '../components/auth/LoginText';
-import LoginForm from '../components/auth/LoginForm';
-import SignupForm from '../components/auth/SignupForm';
 import TodoList from '../components/todo/TodoList';
+import CSVParser from '../components/CSVParser';
 
 class Home extends Component {
 
@@ -11,6 +9,7 @@ class Home extends Component {
     return(
       <div className="container">
         <h1 className="h2 page-title">Home Page</h1>
+        <CSVParser />
         <TodoList />
 
       </div>

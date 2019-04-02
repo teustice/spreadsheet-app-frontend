@@ -112,6 +112,7 @@ class TodoList extends Component {
 
 
   render() {
+    console.log(this.state.rows.data && this.state.rows.data.length);
     let that = this;
     const columns = [
       { key: 'title', name: 'Title', sortable: true, filterable: true },
