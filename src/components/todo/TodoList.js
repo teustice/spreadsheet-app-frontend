@@ -25,6 +25,7 @@ class TodoList extends Component {
 
     this.state = {
       rows: [],
+      initialRows: [],
       selectedIndexes: [],
       selectedTodo: undefined
     }
@@ -37,12 +38,22 @@ class TodoList extends Component {
     this.props.getTodos().then(this.mapTodosToState.bind(this));
   }
 
+  componentDidUpdate() {
+    if(JSON.stringify(this.props.todos.data) !== JSON.stringify(this.state.initialRows.data)) {
+      this.mapTodosToState()
+    }
+  }
+
   mapTodosToState() {
     this.setState({rows: {data: this.props.todos.data.slice()}})
+    this.setState({initialRows: {data: this.props.todos.data.slice()}})
   }
 
   sortRows (initialRows, sortColumn, sortDirection, rows)  {
     const comparer = (a, b) => {
+      //If column is a string, make lowercase to sort properly
+      a[sortColumn] = typeof(a[sortColumn]) === "string" ? a[sortColumn].toLowerCase() : a[sortColumn];
+      b[sortColumn] = typeof(b[sortColumn]) === "string" ? b[sortColumn].toLowerCase() : b[sortColumn];
       if (sortDirection === "ASC") {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
       } else if (sortDirection === "DESC") {
@@ -139,6 +150,8 @@ class TodoList extends Component {
                 />
             }
           </div>
+          <TodoListForm submitCallback={() => this.props.getTodos().then(this.mapTodosToState.bind(this))}/>
+
           <SimpleModal ref={this.modal} isOpen={false}>
             <TodoListForm editMode={true} todo={this.state.selectedTodo} submitCallback={this.closeModal.bind(this)}/>
           </SimpleModal>

@@ -4,7 +4,6 @@ import LoginText from '../components/auth/LoginText';
 import LoginForm from '../components/auth/LoginForm';
 import SignupForm from '../components/auth/SignupForm';
 import TodoList from '../components/todo/TodoList';
-import TodoListForm from '../components/todo/TodoListForm';
 
 class Home extends Component {
 
@@ -13,7 +12,6 @@ class Home extends Component {
       <div className="container">
         <h1 className="h2 page-title">Home Page</h1>
         <TodoList />
-        <TodoListForm />
 
       </div>
     )

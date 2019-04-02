@@ -24,7 +24,7 @@ export function getTodos() {
   }
 }
 
-export function createTodo(body) {
+export function createTodo(body, callback) {
   return function(dispatch) {
     dispatch({
       type: 'CREATE_TODOS_REQUEST'
