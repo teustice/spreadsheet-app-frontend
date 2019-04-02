@@ -17,13 +17,19 @@ class TodoListForm extends Component {
     addTodo(e) {
       e.preventDefault();
       let body;
+      let that = this;
 
       if(this.props.editMode && this.props.todo){
         body = {
           title: this.state.title,
           text: this.state.text,
         }
-        this.props.updateTodo(body, this.props.todo._id)
+        this.props.updateTodo(body, this.props.todo._id, function() {
+          that.props.notifications.addNotification({
+            message: body.title + ' was updated successfully',
+            level: 'success'
+          })
+        })
 
         if(this.props.submitCallback) {
           this.props.submitCallback();
@@ -34,7 +40,12 @@ class TodoListForm extends Component {
           text: this.state.text,
           user: this.props.currentUser
         };
-        this.props.createTodo(body)
+        this.props.createTodo(body, function() {
+          that.props.notifications.addNotification({
+            message: body.title + ' was created successfully',
+            level: 'success'
+          })
+        })
 
         if(this.props.submitCallback) {
           this.props.submitCallback();
@@ -87,8 +98,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  createTodo: (body) => dispatch(createTodo(body)),
-  updateTodo: (body, id) => dispatch(updateTodo(body, id))
+  createTodo: (body, callback) => dispatch(createTodo(body, callback)),
+  updateTodo: (body, id, callback) => dispatch(updateTodo(body, id, callback))
 })
 
 

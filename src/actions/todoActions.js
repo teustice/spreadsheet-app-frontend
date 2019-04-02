@@ -49,6 +49,7 @@ export function createTodo(body, callback) {
             type: 'CREATE_TODOS_SUCCESS',
             data: body
           });
+          callback && callback();
           dispatch(getTodos());
         }
       });
@@ -87,7 +88,7 @@ export function createTodoBatch(body, callback) {
   }
 }
 
-export function updateTodo(body, id) {
+export function updateTodo(body, id, callback) {
   return function(dispatch) {
     dispatch({
       type: 'UPDATE_TODOS_REQUEST'
@@ -112,13 +113,14 @@ export function updateTodo(body, id) {
             type: 'UPDATE_TODOS_SUCCESS',
             data: body
           });
+          callback && callback();
           dispatch(getTodos());
         }
       });
   }
 }
 
-export function deleteTodo(id) {
+export function deleteTodo(id, callback) {
   return function(dispatch) {
     dispatch({
       type: 'DELETE_TODOS_REQUEST'
@@ -142,13 +144,14 @@ export function deleteTodo(id) {
             type: 'DELETE_TODOS_SUCCESS',
             data: body
           });
+          callback && callback();
           dispatch(getTodos());
         }
       });
   }
 }
 
-export function deleteTodoBatch(idArray) {
+export function deleteTodoBatch(idArray, callback) {
   return function(dispatch) {
     dispatch({
       type: 'DELETE_TODOS_BATCH_REQUEST'
@@ -173,6 +176,7 @@ export function deleteTodoBatch(idArray) {
             type: 'DELETE_TODOS_BATCH_SUCCESS',
             data: body
           });
+          callback && callback()
           dispatch(getTodos());
         }
       });

@@ -51,6 +51,11 @@ class LoginForm extends Component {
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
                     that.setState({errors: ''})
 
+                    that.props.notifications.addNotification({
+                      message: `Welcome, ${json.user.email}`,
+                      level: 'success'
+                    })
+
                     that.props.history.push('/')
                 } else if(json.errors) {
                     that.setState({errors: json.errors})

@@ -103,8 +103,14 @@ class TodoList extends Component {
   }
 
   deleteTodo(todo) {
+    let that = this;
     if (window.confirm(`Are you sure you want to delete todo: ${todo.title}`)) {
-      this.props.deleteTodo(todo._id)
+      this.props.deleteTodo(todo._id, function() {
+        that.props.notifications.addNotification({
+          message: todo.title + ' was deleted successfully',
+          level: 'success'
+        })
+      })
     }
   }
 
@@ -121,7 +127,14 @@ class TodoList extends Component {
           this.state.selectedIndexes.forEach(function(i){
             idArray.push(that.state.rows.data[i]._id);
           })
-          that.props.deleteTodoBatch(idArray);
+          that.props.deleteTodoBatch(idArray, function() {
+            that.props.notifications.addNotification({
+              message: 'Items were deleted successfully',
+              level: 'success'
+            })
+
+            that.setState({selectedIndexes: []})
+          });
         }
         break;
       default:
@@ -202,8 +215,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getTodos: () => dispatch(getTodos()),
-  deleteTodo: (id) => dispatch(deleteTodo(id)),
-  deleteTodoBatch: (idArray) => dispatch(deleteTodoBatch(idArray)),
+  deleteTodo: (id, callback) => dispatch(deleteTodo(id, callback)),
+  deleteTodoBatch: (idArray, callback) => dispatch(deleteTodoBatch(idArray, callback)),
 })
 
 

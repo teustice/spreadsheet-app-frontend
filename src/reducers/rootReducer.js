@@ -11,6 +11,7 @@ import {
 import {
   users
 } from './users';
+import notifications from './notifications';
 
 export default combineReducers({
   currentUser,
@@ -19,5 +20,6 @@ export default combineReducers({
   deleteTodoBatch,
   createTodo,
   createTodoBatch,
-  users
+  users,
+  notifications
 })

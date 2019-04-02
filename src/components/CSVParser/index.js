@@ -69,6 +69,11 @@ class CSVParser extends Component {
 
       this.props.createTodoBatch(body, function() {
         that.setState({data: []})
+        document.querySelector('.csv-input').value = '';
+        that.props.notifications.addNotification({
+          message: 'CSV was imported successfully!',
+          level: 'success'
+        })
       });
     }
   }
