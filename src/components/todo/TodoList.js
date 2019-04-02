@@ -125,7 +125,8 @@ class TodoList extends Component {
         if (window.confirm(`Are you sure you want to delete the selected items?`)) {
           let idArray = [];
           this.state.selectedIndexes.forEach(function(i){
-            idArray.push(that.state.rows.data[i]._id);
+            //get selected indexes of filtered dataset
+            idArray.push(getRows(that.state.rows.data, that.state.filters)[i]._id);
           })
           that.props.deleteTodoBatch(idArray, function() {
             that.props.notifications.addNotification({
