@@ -1,6 +1,6 @@
 import apiUrl from '../lib/apiUrl';
 
-export function getTodos() {
+export function getTodos(callback) {
   return function(dispatch) {
     dispatch({
       type: 'GET_TODOS_REQUEST'
@@ -18,6 +18,8 @@ export function getTodos() {
             type: 'GET_TODOS_SUCCESS',
             data: body
           });
+
+          callback && callback();
 
         }
       })

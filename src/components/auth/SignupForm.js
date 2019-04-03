@@ -61,6 +61,10 @@ class SignupForm extends Component {
                     localStorage.setItem('currentUser', JSON.stringify(json.user));
                     that.setState({errors: ''})
                     that.props.history.push('/')
+                    that.props.notifications.addNotification({
+                      message: `Welcome, ${json.user.email}`,
+                      level: 'success'
+                    })
                 } else if(json.errors) {
                     that.setState({errors: json.errors})
                 }

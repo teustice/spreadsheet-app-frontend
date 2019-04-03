@@ -45,7 +45,7 @@ class TodoList extends Component {
 
   componentDidMount() {
     //map todos from props to state for sorting
-    this.props.getTodos().then(this.mapTodosToState.bind(this));
+    this.props.getTodos(this.mapTodosToState.bind(this));
   }
 
   componentDidUpdate() {
@@ -266,7 +266,7 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  getTodos: () => dispatch(getTodos()),
+  getTodos: (callback) => dispatch(getTodos(callback)),
   deleteTodo: (id, callback) => dispatch(deleteTodo(id, callback)),
   deleteTodoBatch: (idArray, callback) => dispatch(deleteTodoBatch(idArray, callback)),
 })

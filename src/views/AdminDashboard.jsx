@@ -20,7 +20,6 @@ class AdminDashboard extends Component {
 
             <TabPanel>
               <TodoList />
-              <TodoListForm />
             </TabPanel>
             <TabPanel>
               <UserList />
