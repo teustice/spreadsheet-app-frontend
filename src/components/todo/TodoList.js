@@ -132,14 +132,6 @@ class TodoList extends Component {
           csvContent += row + "\r\n";
     });
 
-    // var encodedUri = encodeURI(csvContent);
-    // var link = document.createElement("a");
-    // link.setAttribute("href", encodedUri);
-    // link.setAttribute("download", `export.csv`);
-    // document.body.appendChild(link); // Required for FF
-    //
-    // link.click(); // This will download the data file named "my_data.csv".
-
     var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     if (navigator.msSaveBlob) { // IE 10+
         navigator.msSaveBlob(blob, filename);
