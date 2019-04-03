@@ -122,7 +122,8 @@ class TodoList extends Component {
   }
 
   downloadCSV(data) {
-    let csvContent = "data:text/csv;charset=utf-8,";
+    let filename = 'export.csv';
+    let csvContent = '';
     csvContent += 'title,text' + "\r\n";
     data.forEach(function(rowArray, index){
        let row = rowArray.join(",");
@@ -131,13 +132,30 @@ class TodoList extends Component {
           csvContent += row + "\r\n";
     });
 
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `export.csv`);
-    document.body.appendChild(link); // Required for FF
+    // var encodedUri = encodeURI(csvContent);
+    // var link = document.createElement("a");
+    // link.setAttribute("href", encodedUri);
+    // link.setAttribute("download", `export.csv`);
+    // document.body.appendChild(link); // Required for FF
+    //
+    // link.click(); // This will download the data file named "my_data.csv".
 
-    link.click(); // This will download the data file named "my_data.csv".
+    var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
   }
 
   bulkAction(action) {

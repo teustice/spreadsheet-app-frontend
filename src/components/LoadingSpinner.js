@@ -10,7 +10,7 @@ const LoadingSpinner = (props) => {
         height="50"
         width="50"
         />
-      <p>Loading</p>
+      <p>{props.text ? props.text : 'Loading'}</p>
     </div>
   )
 }

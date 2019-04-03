@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import CSVReader from "react-csv-reader";
 
 import {createTodoBatch} from '../../actions/todoActions'
+import LoadingSpinner from '../LoadingSpinner'
 import apiUrl from '../../lib/apiUrl';
 
 class CSVParser extends Component {
@@ -11,7 +12,8 @@ class CSVParser extends Component {
     this.state = {
       data: [],
       errorIndexes: [],
-      errors: []
+      errors: [],
+      uploading: false,
     }
   }
 
@@ -49,8 +51,6 @@ class CSVParser extends Component {
       }
     })
 
-    console.log(errorIndexes);
-
     this.setState({errorIndexes: errorIndexes})
 
     if(errors.length >= 1) {
@@ -67,6 +67,7 @@ class CSVParser extends Component {
     let that = this;
     if(this.validateData()) {
       let body = [];
+      this.setState({uploading: true});
       let data = this.state.data.slice();
       data.shift(); //remove headers
       data.forEach(function(entry, index) {
@@ -85,6 +86,7 @@ class CSVParser extends Component {
           message: 'CSV was imported successfully!',
           level: 'success'
         })
+        that.setState({uploading: false});
       });
     }
   }
@@ -129,9 +131,12 @@ class CSVParser extends Component {
             </tbody>
           </table>
 
-          {this.state.data.length > 0 && errors.length < 1 &&
-            <button className="btn btn-sm" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
+          {this.state.uploading ?
+              <LoadingSpinner text="Uploading"/>
+            : this.state.data.length > 0 && errors.length < 1 &&
+              <button className="btn btn-sm" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
           }
+
         </div>
       </div>
     );
