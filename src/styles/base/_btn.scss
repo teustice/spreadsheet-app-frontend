@@ -30,3 +30,42 @@
     color: $white;
   }
 }
+
+.btn-force {
+  padding: 10px 25px !important;
+  text-transform: uppercase !important;
+  font-size: 1.3rem !important;
+  letter-spacing: 2px !important;
+  font-weight: 100 !important;
+  color: $white !important;
+  background-color: $brand_1 !important;
+  -webkit-transform: perspective(1px) translateZ(0) !important;
+  transform: perspective(1px) translateZ(0) !important;
+  box-shadow: 0 0 1px $brand_1 !important;
+  position: relative !important;
+  -webkit-transform: perspective(1px) translateZ(0) !important;
+  transform: perspective(1px) translateZ(0) !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0) !important;
+  display: inline-block !important;
+
+  &.disable {
+    opacity: .5 !important;
+    pointer-events: none !important;
+  }
+
+  &.btn-sm {
+    font-size: .8rem !important;
+    padding: 5px 15px !important;
+  }
+
+  &:hover {
+    color: $white !important;
+  }
+}
+
+
+
+.react-grid-Toolbar .btn {
+  @extend .btn-force;
+}

@@ -37,7 +37,7 @@ class CSVParser extends Component {
     //validate body
     this.state.data.forEach(function(entry, index) {
       if(entry.length !== 2) {
-        let error = 'Invalid Data! A row was empty';
+        let error = `Invalid Data! Row ${index} was empty`;
         !errors.includes(error) && errors.push(error);
       }
     })
@@ -58,8 +58,8 @@ class CSVParser extends Component {
       let body = [];
       let data = this.state.data.slice();
       data.shift(); //remove headers
-
       data.forEach(function(entry, index) {
+
         body.push({
           title: entry[0],
           text: entry[1],

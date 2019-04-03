@@ -118,6 +118,26 @@ class TodoList extends Component {
     this.modal.current.closeModal()
   }
 
+  downloadCSV(data) {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += 'title,text' + "\r\n";
+    data.forEach(function(rowArray, index){
+       let row = rowArray.join(",");
+       data.length === index + 1 ?
+          csvContent += row  :
+          csvContent += row + "\r\n";
+    });
+
+    var encodedUri = encodeURI(csvContent);
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `export.csv`);
+    document.body.appendChild(link); // Required for FF
+
+    link.click(); // This will download the data file named "my_data.csv".
+  }
+
   bulkAction(action) {
     let that = this;
     switch (action) {
@@ -137,6 +157,20 @@ class TodoList extends Component {
             that.setState({selectedIndexes: []})
           });
         }
+        break;
+      case 'DOWNLOAD':
+          let rowArray = [];
+          this.state.selectedIndexes.forEach(function(i){
+            //get selected indexes of filtered dataset
+            let row = getRows(that.state.rows.data, that.state.filters)[i];
+            rowArray.push([
+              `"${row.title}"`,
+              `"${row.text}"`
+            ]);
+          })
+
+          this.downloadCSV(rowArray);
+
         break;
       default:
 
@@ -182,7 +216,12 @@ class TodoList extends Component {
                   onGridSort={(sortColumn, sortDirection) =>
                     this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)}})
                   }
-                  toolbar={<TableToolbar selected={this.state.selectedIndexes} bulkDelete={() => this.bulkAction('DELETE')} enableFilter={true} />}
+                  toolbar={
+                    <TableToolbar
+                      selected={this.state.selectedIndexes}
+                      bulkDelete={() => this.bulkAction('DELETE')}
+                      downloadCSV={() => this.bulkAction('DOWNLOAD')}
+                      enableFilter={true} />}
                   onAddFilter={filter => this.setState({ filters: handleFilterChange(filter) })}
                   onClearFilters={() => this.setState({ filters: {} })}
                   rowSelection={{
