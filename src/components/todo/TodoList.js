@@ -59,18 +59,20 @@ class TodoList extends Component {
     this.setState({initialRows: {data: this.props.todos.data.slice()}})
   }
 
-  sortRows (initialRows, sortColumn, sortDirection, rows)  {
+  sortRows (sortColumn, sortDirection)  {
     const comparer = (a, b) => {
+      let colA = a[sortColumn];
+      let colB = b[sortColumn];
       //If column is a string, make lowercase to sort properly
-      a[sortColumn] = typeof(a[sortColumn]) === "string" ? a[sortColumn].toLowerCase() : a[sortColumn];
-      b[sortColumn] = typeof(b[sortColumn]) === "string" ? b[sortColumn].toLowerCase() : b[sortColumn];
+      colA = typeof(colA) === "string" ? colA.toLowerCase() : colA;
+      colB = typeof(colB) === "string" ? colB.toLowerCase() : colB;
       if (sortDirection === "ASC") {
-        return a[sortColumn] > b[sortColumn] ? 1 : -1;
+        return colA > colB ? 1 : -1;
       } else if (sortDirection === "DESC") {
-        return a[sortColumn] < b[sortColumn] ? 1 : -1;
+        return colA < colB ? 1 : -1;
       }
     };
-    return sortDirection === "NONE" ? this.props.todos.data.slice() : rows.sort(comparer);
+    return sortDirection === "NONE" ? this.props.todos.data.slice() : this.getRows(this.state.rows.data, this.state.filters).slice().sort(comparer);
   };
 
   getRows(rows, filters) {
@@ -129,7 +131,6 @@ class TodoList extends Component {
           csvContent += row + "\r\n";
     });
 
-    var encodedUri = encodeURI(csvContent);
     var encodedUri = encodeURI(csvContent);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -215,7 +216,7 @@ class TodoList extends Component {
                   rowsCount={rows.length}
                   minHeight={500}
                   onGridSort={(sortColumn, sortDirection) =>
-                    this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, that.getRows(this.state.rows.data, that.state.filters))}})
+                    this.setState({rows: {data: this.sortRows(sortColumn, sortDirection,)}})
                   }
                   toolbar={
                     <TableToolbar
