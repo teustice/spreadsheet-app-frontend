@@ -44,6 +44,8 @@ class SignupForm extends Component {
             }
         }
 
+        console.log(user);
+
         fetch(`${apiUrl}/users`, {
             method: 'POST',
             headers: {

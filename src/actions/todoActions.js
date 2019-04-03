@@ -78,6 +78,7 @@ export function createTodoBatch(body, callback) {
             type: 'CREATE_TODOS_BATCH_FAILURE',
             error: body.error
           });
+          callback && callback('Error');
         } else {
           dispatch({
             type: 'CREATE_TODOS_BATCH_SUCCESS',

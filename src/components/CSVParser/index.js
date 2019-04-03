@@ -4,7 +4,6 @@ import CSVReader from "react-csv-reader";
 
 import {createTodoBatch} from '../../actions/todoActions'
 import LoadingSpinner from '../LoadingSpinner'
-import apiUrl from '../../lib/apiUrl';
 
 class CSVParser extends Component {
   constructor() {
@@ -13,7 +12,7 @@ class CSVParser extends Component {
       data: [],
       errorIndexes: [],
       errors: [],
-      uploading: false,
+      processing: false,
     }
   }
 
@@ -67,7 +66,7 @@ class CSVParser extends Component {
     let that = this;
     if(this.validateData()) {
       let body = [];
-      this.setState({uploading: true});
+      this.setState({processing: true});
       let data = this.state.data.slice();
       data.shift(); //remove headers
       data.forEach(function(entry, index) {
@@ -79,14 +78,23 @@ class CSVParser extends Component {
         })
       })
 
-      this.props.createTodoBatch(body, function() {
-        that.setState({data: []})
-        document.querySelector('.csv-input').value = '';
-        that.props.notifications.addNotification({
-          message: 'CSV was imported successfully!',
-          level: 'success'
-        })
-        that.setState({uploading: false});
+      this.props.createTodoBatch(body, function(err) {
+        console.log(err);
+        if(err) {
+          that.setState({processing: false});
+          that.props.notifications.addNotification({
+            message: 'Something went wrong uploading the CSV!',
+            level: 'warning'
+          })
+        } else {
+          that.setState({data: []})
+          document.querySelector('.csv-input').value = '';
+          that.props.notifications.addNotification({
+            message: 'CSV was imported successfully!',
+            level: 'success'
+          })
+          that.setState({processing: false});
+        }
       });
     }
   }
@@ -101,7 +109,7 @@ class CSVParser extends Component {
       })
 
       return (
-        <tr key={'r' + rowIndex} className={`row-${rowIndex} ${that.state.errorIndexes.includes(rowIndex) ? 'error' : ''}`}>
+        <tr key={'r' + rowIndex} className={`row-${rowIndex} ${that.state.errorIndexes.includes(rowIndex) ? 'error-message' : ''}`}>
           {cells}
         </tr>
       )
@@ -109,7 +117,7 @@ class CSVParser extends Component {
 
     let errors = this.state.errors.map(function(error, index) {
       return(
-        <p key={index}>{error}</p>
+        <p key={index} className="error-message">{error}</p>
       )
     })
 
@@ -125,17 +133,23 @@ class CSVParser extends Component {
           errors
         }
         <div className="spreadsheet-preview-area">
+          {this.state.errors.length <= 0 && this.state.data.length > 0 &&
+            <p className="success-message">CSV has been validated and is ready to import</p>
+          }
+
+          <br/>
+
+          {this.state.processing ?
+              <LoadingSpinner text="Uploading"/>
+            : this.state.data.length > 0 && errors.length < 1 &&
+              <button className="btn" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
+          }
+
           <table>
             <tbody>
               {spreadsheet}
             </tbody>
           </table>
-
-          {this.state.uploading ?
-              <LoadingSpinner text="Uploading"/>
-            : this.state.data.length > 0 && errors.length < 1 &&
-              <button className="btn btn-sm" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
-          }
 
         </div>
       </div>
