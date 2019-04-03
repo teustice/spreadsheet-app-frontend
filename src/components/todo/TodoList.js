@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import ReactDataGrid from 'react-data-grid';
-import { Toolbar, Data } from "react-data-grid-addons";
+import { Data } from "react-data-grid-addons";
 
 import {
   getTodos,
@@ -26,9 +26,6 @@ function handleFilterChange(filter, filters) {
   return newFilters;
 };
 
-function getRows(rows, filters) {
-  return selectors.getRows({ rows, filters });
-};
 
 
 class TodoList extends Component {
@@ -74,6 +71,10 @@ class TodoList extends Component {
       }
     };
     return sortDirection === "NONE" ? this.props.todos.data.slice() : rows.sort(comparer);
+  };
+
+  getRows(rows, filters) {
+    return selectors.getRows({ rows, filters });
   };
 
   rowGetter = i => {
@@ -146,7 +147,7 @@ class TodoList extends Component {
           let idArray = [];
           this.state.selectedIndexes.forEach(function(i){
             //get selected indexes of filtered dataset
-            idArray.push(getRows(that.state.rows.data, that.state.filters)[i]._id);
+            idArray.push(that.getRows(that.state.rows.data, that.state.filters)[i]._id);
           })
           that.props.deleteTodoBatch(idArray, function() {
             that.props.notifications.addNotification({
@@ -162,7 +163,7 @@ class TodoList extends Component {
           let rowArray = [];
           this.state.selectedIndexes.forEach(function(i){
             //get selected indexes of filtered dataset
-            let row = getRows(that.state.rows.data, that.state.filters)[i];
+            let row = that.getRows(that.state.rows.data, that.state.filters)[i];
             rowArray.push([
               `"${row.title}"`,
               `"${row.text}"`
@@ -187,7 +188,7 @@ class TodoList extends Component {
     ];
 
     let modifyButtons;
-    let rows = this.state.rows.data ? getRows(this.state.rows.data, this.state.filters).map(function(todo, index){
+    let rows = this.state.rows.data ? that.getRows(this.state.rows.data, this.state.filters).map(function(todo, index){
       if(todo.user._id === that.props.currentUser._id || that.props.currentUser.roles.admin) {
         modifyButtons = (
           <div>
@@ -214,7 +215,7 @@ class TodoList extends Component {
                   rowsCount={rows.length}
                   minHeight={500}
                   onGridSort={(sortColumn, sortDirection) =>
-                    this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, this.state.rows.data)}})
+                    this.setState({rows: {data: this.sortRows(this.props.todos.data, sortColumn, sortDirection, that.getRows(this.state.rows.data, that.state.filters))}})
                   }
                   toolbar={
                     <TableToolbar

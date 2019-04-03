@@ -10,6 +10,7 @@ class CSVParser extends Component {
     super();
     this.state = {
       data: [],
+      errorIndexes: [],
       errors: []
     }
   }
@@ -21,6 +22,7 @@ class CSVParser extends Component {
       this.setState({data: [['File must be a .csv']]});
     } else {
       this.setState({data: data});
+      this.setState({displayData: data});
       this.validateData();
     }
   };
@@ -28,10 +30,14 @@ class CSVParser extends Component {
   validateData() {
     let errors = [];
 
+    let errorIndexes = []
+
     //validate headers
     if(this.state.data[0][0] !== "title" || this.state.data[0][1] !== "text") {
       let error = 'Invalid headers! Headers must be the first row with no spaces.'
       !errors.includes(error) && errors.push(error);
+
+      errorIndexes.push(0)
     }
 
     //validate body
@@ -39,8 +45,13 @@ class CSVParser extends Component {
       if(entry.length !== 2) {
         let error = `Invalid Data! Row ${index} was empty`;
         !errors.includes(error) && errors.push(error);
+        errorIndexes.push(index)
       }
     })
+
+    console.log(errorIndexes);
+
+    this.setState({errorIndexes: errorIndexes})
 
     if(errors.length >= 1) {
       this.setState({errors: errors});
@@ -79,6 +90,7 @@ class CSVParser extends Component {
   }
 
   render() {
+    let that = this;
     let spreadsheet = this.state.data.map(function(row, rowIndex) {
       let cells = row.map(function(cell, cellIndex) {
         return (
@@ -87,7 +99,7 @@ class CSVParser extends Component {
       })
 
       return (
-        <tr key={'r' + rowIndex} className={`row-${rowIndex}`}>
+        <tr key={'r' + rowIndex} className={`row-${rowIndex} ${that.state.errorIndexes.includes(rowIndex) ? 'error' : ''}`}>
           {cells}
         </tr>
       )
@@ -107,21 +119,20 @@ class CSVParser extends Component {
           onFileLoaded={this.renderData.bind(this)}
           />
 
-        {this.state.errors.length  ?
-          errors :
-          <div className="preview-area">
-            <table>
-              <tbody>
-                {spreadsheet}
-              </tbody>
-            </table>
-
-            {this.state.data.length > 0 &&
-              <button className="btn btn-sm" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
-            }
-          </div>
+        {this.state.errors.length > 0 &&
+          errors
         }
+        <div className="spreadsheet-preview-area">
+          <table>
+            <tbody>
+              {spreadsheet}
+            </tbody>
+          </table>
 
+          {this.state.data.length > 0 && errors.length < 1 &&
+            <button className="btn btn-sm" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
+          }
+        </div>
       </div>
     );
   }
