@@ -125,7 +125,7 @@ class CSVParser extends Component {
       <div>
         <CSVReader
           cssClass="react-csv-input"
-          label="Select CSV to be validated"
+          label="Select CSV to upload"
           onFileLoaded={this.renderData.bind(this)}
           />
 
