@@ -5,6 +5,8 @@ import CSVReader from "react-csv-reader";
 import {createTodoBatch} from '../../actions/todoActions'
 import LoadingSpinner from '../LoadingSpinner'
 
+let csvData = [];
+
 class CSVParser extends Component {
   constructor() {
     super();
@@ -17,16 +19,29 @@ class CSVParser extends Component {
   }
 
   renderData = data => {
-    let csvInput = document.querySelector('.csv-input');
-    let fileExtension = csvInput.value.split('.')[1];
-    if(fileExtension !== 'csv') {
-      this.setState({data: [['File must be a .csv']]});
-    } else {
-      this.setState({data: data});
-      this.setState({displayData: data});
-      this.validateData();
-    }
+    // let csvInput = document.querySelector('.csv-input');
+    // let fileExtension = csvInput.value.split('.')[1];
+    // if(fileExtension !== 'csv') {
+    //   this.setState({data: [['File must be a .csv']]});
+    // } else {
+    //
+    //   //place execution at the end of the stack to maintain interaction with site
+    //   // that.setState({data: data});
+    //   // that.setState({displayData: data});
+    //   // that.validateData();
+    // }
   };
+
+  parserStep(results, file) {
+    csvData = csvData.concat(results.data);
+  }
+
+  parserComplete() {
+    console.log('COMPLETE');
+    console.log(csvData);
+    this.setState({data: csvData})
+    // this.validateData();
+  }
 
   validateData() {
     let errors = [];
@@ -79,7 +94,6 @@ class CSVParser extends Component {
       })
 
       this.props.createTodoBatch(body, function(err) {
-        console.log(err);
         if(err) {
           that.setState({processing: false});
           that.props.notifications.addNotification({
@@ -126,6 +140,10 @@ class CSVParser extends Component {
         <CSVReader
           cssClass="react-csv-input"
           label="Select CSV to upload"
+          parserOptions={{
+            chunk: (results, file) => this.parserStep(results, file),
+            complete: () => this.parserComplete()
+          }}
           onFileLoaded={this.renderData.bind(this)}
           />
 
