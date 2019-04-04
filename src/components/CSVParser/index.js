@@ -13,8 +13,10 @@ class CSVParser extends Component {
     this.state = {
       data: [],
       errorIndexes: [],
+      spreadsheetPreview: [],
       errors: [],
       processing: false,
+      spinnerText: ''
     }
   }
 
@@ -38,9 +40,11 @@ class CSVParser extends Component {
 
   parserComplete() {
     console.log('COMPLETE');
-    console.log(csvData);
     this.setState({data: csvData})
-    // this.validateData();
+    csvData = [];
+    this.setState({spreadsheetPreview: []})
+    this.validateData();
+    this.lazyLoadTablePreview();
   }
 
   validateData() {
@@ -81,7 +85,7 @@ class CSVParser extends Component {
     let that = this;
     if(this.validateData()) {
       let body = [];
-      this.setState({processing: true});
+      this.setState({processing: true, spinnerText: 'Uploading'});
       let data = this.state.data.slice();
       data.shift(); //remove headers
       data.forEach(function(entry, index) {
@@ -113,21 +117,46 @@ class CSVParser extends Component {
     }
   }
 
+  lazyLoadTablePreview() {
+    let that = this;
+    var length = this.state.data.length;
+    var index = 0;
+    this.setState({processing: true, spinnerText: 'Loading CSV Preview'})
+
+    var process = function() {
+      for (; index < length; index++) {
+        var row = that.state.data[index];
+
+        let cells = row.map(function(cell, cellIndex) {
+          return (
+            <td key={'c' + cellIndex}>{cell}</td>
+          )
+        })
+
+        let rowMarkup = (
+          <tr key={'r' + index} className={`row-${index} ${that.state.errorIndexes.includes(index) ? 'error-message' : ''}`}>
+            {cells}
+          </tr>
+        )
+
+        var newPreview = that.state.spreadsheetPreview.concat(rowMarkup);
+        that.setState({ spreadsheetPreview: newPreview })
+        // Perform xml processing
+        //change modulo division number to set chunk count
+        if (index + 1 < length && index % 50 == 0) {
+          setTimeout(process, 50);
+          index++;
+          break;
+        } else if(index + 1 === length) {
+          that.setState({processing: false})
+        }
+      }
+    };
+    process();
+  }
+
   render() {
     let that = this;
-    let spreadsheet = this.state.data.map(function(row, rowIndex) {
-      let cells = row.map(function(cell, cellIndex) {
-        return (
-          <td key={'c' + cellIndex}>{cell}</td>
-        )
-      })
-
-      return (
-        <tr key={'r' + rowIndex} className={`row-${rowIndex} ${that.state.errorIndexes.includes(rowIndex) ? 'error-message' : ''}`}>
-          {cells}
-        </tr>
-      )
-    })
 
     let errors = this.state.errors.map(function(error, index) {
       return(
@@ -158,14 +187,14 @@ class CSVParser extends Component {
           <br/>
 
           {this.state.processing ?
-              <LoadingSpinner text="Uploading"/>
+              <LoadingSpinner text={this.state.spinnerText}/>
             : this.state.data.length > 0 && errors.length < 1 &&
               <button className="btn" onClick={this.uploadCSV.bind(this)}>Upload CSV</button>
           }
 
           <table>
             <tbody>
-              {spreadsheet}
+              {this.state.spreadsheetPreview}
             </tbody>
           </table>
 
