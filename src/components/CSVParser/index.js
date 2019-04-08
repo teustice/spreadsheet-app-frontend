@@ -7,7 +7,7 @@ import LoadingSpinner from '../LoadingSpinner'
 
 let csvData = [];
 
-class CSVParser extends Component {
+export class CSVParser extends Component {
   constructor() {
     super();
     this.state = {
@@ -20,7 +20,7 @@ class CSVParser extends Component {
     }
   }
 
-  renderData = data => {
+  renderData(data) {
     // let csvInput = document.querySelector('.csv-input');
     // let fileExtension = csvInput.value.split('.')[1];
     // if(fileExtension !== 'csv') {

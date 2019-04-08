@@ -6,7 +6,7 @@ import {
 } from '../../actions/userActions'
 import apiUrl from '../../lib/apiUrl';
 
-class ForgotPasswordForm extends Component {
+export class ForgotPasswordForm extends Component {
     constructor(props) {
         super(props);
 

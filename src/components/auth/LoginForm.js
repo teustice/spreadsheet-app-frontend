@@ -5,7 +5,7 @@ import { setCurrentUser } from '../../actions/setCurrentUser'
 import apiUrl from '../../lib/apiUrl';
 import LogoutButton from './LogoutButton'
 
-class LoginForm extends Component {
+export class LoginForm extends Component {
     constructor(props) {
         super(props);
 

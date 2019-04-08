@@ -5,7 +5,7 @@ import { setCurrentUser } from '../../actions/setCurrentUser'
 import apiUrl from '../../lib/apiUrl';
 import roles from '../../lib/roles';
 
-class SignupForm extends Component {
+export class SignupForm extends Component {
     constructor(props) {
         super(props);
 
