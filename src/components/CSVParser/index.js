@@ -121,7 +121,7 @@ class CSVParser extends Component {
     let that = this;
     var length = this.state.data.length;
     var index = 0;
-    this.setState({processing: true, spinnerText: 'Loading CSV Preview'})
+    that.setState({processing: true, spinnerText: `Loading CSV Preview...`})
 
     var process = function() {
       for (; index < length; index++) {
@@ -143,8 +143,8 @@ class CSVParser extends Component {
         that.setState({ spreadsheetPreview: newPreview })
         // Perform xml processing
         //change modulo division number to set chunk count
-        if (index + 1 < length && index % 50 == 0) {
-          setTimeout(process, 50);
+        if (index + 1 < length && index % 100 == 0) {
+          setTimeout(process, 5);
           index++;
           break;
         } else if(index + 1 === length) {

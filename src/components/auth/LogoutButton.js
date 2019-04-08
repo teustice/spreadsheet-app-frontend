@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 
 import { setCurrentUser } from '../../actions/setCurrentUser'
 
-class LogoutButton extends Component {
+export class LogoutButton extends Component {
 
     resetCurrentUser() {
       localStorage.removeItem('currentUser')
       this.props.setCurrentUser(null);
       this.props.history.push('/signin')
     }
-
 
     render() {
         return (

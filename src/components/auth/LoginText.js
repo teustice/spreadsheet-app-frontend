@@ -1,26 +1,23 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 
-class LoginText extends Component {
+export class LoginText extends Component {
     render() {
-        let roles = [];
-        if(this.props.currentUser) {
-          for (var role in this.props.currentUser.roles) {
-            if (this.props.currentUser.roles.hasOwnProperty(role) && this.props.currentUser.roles[role]) {
-              roles.push('|' + role + '| ')
-            }
-          }
-        }
         return (
-            <div className={"login-text"} >
+            <article className={"login-text"} >
                 {this.props.currentUser &&
                   <div>
                     <p>Hello, {this.props.currentUser.email}</p>
                   </div>
                 }
-            </div>
+            </article>
         );
     }
+}
+
+LoginText.propTypes = {
+  currentUser: PropTypes.object
 }
 
 const mapStateToProps = state => ({
